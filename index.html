@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成就班出國課程・機票資料收集表</title>
+<meta name="description" content="成就班出國課程學員機票資料收集表。請先確認機票是否與團隊一起訂，再依指示填寫護照與聯絡資料。">
+<meta property="og:title" content="成就班出國課程・機票資料收集表">
+<meta property="og:description" content="先選機票安排方式，再填護照資料。姓名、生日、護照號碼請一字不差照護照填寫。">
+<style>
+  /* ============================================================
+     設定區（非工程師也能改）：
+     ① SCRIPT_URL：Google 試算表接好後，把網址貼到下面 JS 的 SCRIPT_URL。
+     ② CONFIG：課程名稱、截止日、聯絡方式，直接改引號中間的字。
+     ============================================================ */
+  :root{
+    --gold:#c8974a; --gold-deep:#a9762c; --sky:#3f6fb0; --ink:#2c2b30;
+    --muted:#7d7566; --cream:#fffaf2; --line:#ecdfc9; --ok:#2e9e6b; --warn:#d9534f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+    color:var(--ink); line-height:1.7; -webkit-text-size-adjust:100%;
+    background:linear-gradient(165deg,#fdf6e9 0%,#f7ead6 45%,#eef1f7 100%);
+    background-attachment:fixed; padding:18px 12px 70px;
+  }
+  .wrap{max-width:620px; margin:0 auto;}
+
+  .hero{background:linear-gradient(135deg,#fffdf8,#fff); border-radius:24px;
+    padding:28px 24px 24px; text-align:center; box-shadow:0 12px 34px rgba(169,118,44,.16);}
+  .badge{display:inline-block; background:var(--gold); color:#fff; font-weight:800;
+    font-size:13px; padding:5px 16px; border-radius:999px; letter-spacing:2px; margin-bottom:12px;}
+  .title{font-size:27px; font-weight:900; letter-spacing:1px; line-height:1.3; color:var(--gold-deep);}
+  .subtitle{font-size:15px; color:var(--muted); margin-top:10px;}
+  .deadline{margin-top:14px; font-size:15px; font-weight:800; color:var(--warn);}
+
+  .notice{background:#fff6e2; border:1px solid var(--line); border-radius:18px;
+    padding:16px 18px; margin-top:16px; font-size:14px; color:#7a6234;}
+  .notice b{color:var(--gold-deep);}
+
+  .card{background:#fff; border-radius:22px; padding:22px 20px; margin-top:16px;
+    box-shadow:0 10px 28px rgba(169,118,44,.10);}
+  .sec-title{font-size:18px; font-weight:900; color:var(--gold-deep);
+    padding-bottom:10px; border-bottom:2px solid var(--line); margin-bottom:6px;}
+  .sec-desc{font-size:13px; color:var(--muted); margin:8px 0 4px;}
+
+  .q{margin-top:18px;}
+  .q label.qt{display:block; font-weight:800; font-size:15px; margin-bottom:6px;}
+  .req{color:var(--warn); font-weight:900; margin-left:4px;}
+  .hint{font-size:12.5px; color:var(--muted); margin-bottom:8px;}
+
+  input[type=text], input[type=tel], input[type=email], input[type=date], select, textarea{
+    width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px;
+    font-size:16px; font-family:inherit; color:var(--ink); background:#fffdf9;
+  }
+  input:focus, select:focus, textarea:focus{outline:none; border-color:var(--gold); background:#fff;}
+  textarea{min-height:92px; resize:vertical;}
+  input.upper{text-transform:uppercase;}
+
+  .opts{display:flex; flex-direction:column; gap:9px;}
+  .opt{display:flex; gap:10px; align-items:flex-start; padding:12px 14px;
+    border:1.5px solid var(--line); border-radius:14px; background:#fffdf9; cursor:pointer;}
+  .opt:hover{border-color:var(--gold);}
+  .opt input{margin-top:4px; width:18px; height:18px; accent-color:var(--gold-deep); flex:0 0 auto;}
+  .opt.sel{border-color:var(--gold-deep); background:#fff6e2;}
+  .opt > span{display:block;}
+  .opt .ot{display:block; font-weight:700; font-size:15px; line-height:1.5;}
+  .opt .od{display:block; font-size:12.5px; color:var(--muted); line-height:1.6; margin-top:2px;}
+  .row2{display:flex; gap:10px;} .row2 > *{flex:1;}
+
+  .filebox{border:1.5px dashed var(--line); border-radius:14px; padding:16px; text-align:center;
+    background:#fffdf9; cursor:pointer;}
+  .filebox.has{border-color:var(--ok); background:#f2fbf6;}
+  .filebox span{font-size:14px; color:var(--muted);}
+  .filebox img{max-width:100%; border-radius:10px; margin-top:10px;}
+
+  .btn{width:100%; margin-top:22px; padding:16px; border:none; border-radius:16px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-deep)); color:#fff;
+    font-size:18px; font-weight:900; letter-spacing:2px; cursor:pointer;
+    box-shadow:0 10px 24px rgba(169,118,44,.28);}
+  .btn:disabled{opacity:.6; cursor:not-allowed;}
+
+  .err{display:none; background:#fdecea; color:#a2322c; border-radius:12px;
+    padding:12px 14px; margin-top:14px; font-size:14px; font-weight:700;}
+
+  .done{display:none; background:#fff; border-radius:22px; padding:34px 24px; text-align:center;
+    box-shadow:0 12px 34px rgba(169,118,44,.16);}
+  .done h2{color:var(--ok); font-size:24px; margin-bottom:12px;}
+  .done .recap{background:#f7fbf8; border-radius:14px; padding:16px; text-align:left;
+    font-size:14.5px; margin-top:14px; line-height:2;}
+
+  .foot{text-align:center; font-size:12.5px; color:var(--muted); margin-top:22px; line-height:1.9;}
+  .hide{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="badge">出國課程</div>
+    <div class="title" id="courseTitle">成就班・機票資料收集表</div>
+    <div class="subtitle">為了幫大家訂到正確的機票，請花 5 分鐘填完這份表單。<br>姓名、生日、護照號碼<b>一字不差照護照填寫</b>。</div>
+    <div class="deadline" id="deadlineTxt"></div>
+  </div>
+
+  <div class="notice">
+    <b>填寫前請先準備好護照本人資料頁</b>（有照片那一頁）。<br>
+    護照效期需在回程日之後<b>滿 6 個月以上</b>，快到期請先去換發再填表。
+  </div>
+
+  <form id="form">
+
+    <!-- 一、機票安排 -->
+    <div class="card">
+      <div class="sec-title">機票安排</div>
+      <div class="sec-desc">因有學員於成就班前後有個人安排與行程，請填寫機票是否與團隊一起？<br><b>（若時間不與團隊共同，需自付機票費用）</b></div>
+      <div class="q">
+        <label class="qt">請選擇你的機票安排<span class="req">*</span></label>
+        <div class="opts" id="planOpts">
+          <label class="opt"><input type="radio" name="flightPlan" value="去程、回程機票由團隊訂"><span><span class="ot">1. 去程、回程機票由團隊訂</span><span class="od">全程與團隊同班機，最省事也最好照應。</span></span></label>
+          <label class="opt"><input type="radio" name="flightPlan" value="去程機票我有個人安排"><span><span class="ot">2. 去程機票我有個人安排，不需幫我訂</span><span class="od">只需要團隊幫忙訂回程。去程費用自付。</span></span></label>
+          <label class="opt"><input type="radio" name="flightPlan" value="回程機票我有個人安排"><span><span class="ot">3. 回程機票我有個人安排，不需幫我訂</span><span class="od">只需要團隊幫忙訂去程。回程費用自付。</span></span></label>
+          <label class="opt"><input type="radio" name="flightPlan" value="去程回程都自行安排"><span><span class="ot">4. 去程回程時間我都有個人安排，不需幫我訂</span><span class="od">機票全部自理，費用自付。</span></span></label>
+        </div>
+      </div>
+      <div class="q hide" id="selfPlanBox">
+        <label class="qt">你自行安排的航班／時間</label>
+        <div class="hint">已訂就寫班機與日期（例：7/29 BR2198 桃園→東京 09:20）；還沒訂就寫預計的日期，方便老師掌握大家的抵達時間。</div>
+        <textarea name="selfPlanNote" placeholder="例：去程 8/1 自行前往，回程與團隊一起"></textarea>
+      </div>
+    </div>
+
+    <!-- 二、護照資料 -->
+    <div class="card teamOnly">
+      <div class="sec-title">護照資料</div>
+      <div class="sec-desc">訂票用，請完全照護照填寫。填錯需自費改名或重開票。</div>
+
+      <div class="q">
+        <label class="qt">中文姓名<span class="req">*</span></label>
+        <div class="hint">方便老師辨識是誰。</div>
+        <input type="text" name="cnName" id="cnName" placeholder="王大明">
+      </div>
+      <div class="q">
+        <label class="qt">護照英文姓氏 Last Name<span class="req">*</span></label>
+        <div class="hint">照護照拼法，例：WANG</div>
+        <input type="text" class="upper" name="lastName" placeholder="WANG">
+      </div>
+      <div class="q">
+        <label class="qt">護照英文名字 First / Given Name<span class="req">*</span></label>
+        <div class="hint">照護照拼法，例：DA-MING</div>
+        <input type="text" class="upper" name="firstName" placeholder="DA-MING">
+      </div>
+      <div class="q">
+        <label class="qt">護照號碼<span class="req">*</span></label>
+        <div class="hint">護照右上角那組號碼，例：312345678</div>
+        <input type="text" class="upper" name="passportNo" placeholder="312345678">
+      </div>
+      <div class="q">
+        <label class="qt">國籍<span class="req">*</span></label>
+        <input type="text" name="nationality" value="中華民國（Taiwan）">
+      </div>
+      <div class="q">
+        <label class="qt">出生年月日<span class="req">*</span></label>
+        <div class="hint">西元年/月/日</div>
+        <input type="date" name="birthday">
+      </div>
+      <div class="q">
+        <label class="qt">性別（依護照）<span class="req">*</span></label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="gender" value="男 Male"><span class="ot">男 Male</span></label>
+          <label class="opt"><input type="radio" name="gender" value="女 Female"><span class="ot">女 Female</span></label>
+        </div>
+      </div>
+      <div class="q">
+        <label class="qt">護照效期到期日<span class="req">*</span></label>
+        <div class="hint">多數國家需效期滿 6 個月以上，快到期請先換發。</div>
+        <input type="date" name="passportExpiry">
+      </div>
+      <div class="q">
+        <label class="qt">護照個人資料頁照片<span class="req">*</span></label>
+        <div class="hint">上傳有照片那一頁，老師會對照有沒有打錯字。照片會自動縮小後上傳，只有主辦看得到。</div>
+        <label class="filebox" id="fileBox">
+          <span id="fileTxt">點這裡拍照或選擇檔案</span>
+          <input type="file" id="photo" accept="image/*" style="display:none">
+          <img id="preview" class="hide" alt="">
+        </label>
+      </div>
+    </div>
+
+    <!-- 三、聯絡資訊 -->
+    <div class="card">
+      <div class="sec-title">聯絡資訊</div>
+      <div class="q soloName hide">
+        <label class="qt">中文姓名<span class="req">*</span></label>
+        <input type="text" id="cnNameSolo" placeholder="王大明">
+      </div>
+      <div class="q">
+        <label class="qt">手機號碼<span class="req">*</span></label>
+        <div class="hint">電子機票與報到通知會用到。</div>
+        <input type="tel" name="phone" placeholder="0912-345-678">
+      </div>
+      <div class="q">
+        <label class="qt">電子信箱 Email<span class="req">*</span></label>
+        <div class="hint">接收電子機票與行程單。</div>
+        <input type="email" name="email" placeholder="you@example.com">
+      </div>
+      <div class="q">
+        <label class="qt">緊急聯絡人姓名<span class="req">*</span></label>
+        <input type="text" name="emgName" placeholder="王小美">
+      </div>
+      <div class="q">
+        <label class="qt">緊急聯絡人電話<span class="req">*</span></label>
+        <div class="hint">建議填未同行的家人。</div>
+        <input type="tel" name="emgPhone" placeholder="0922-111-222">
+      </div>
+    </div>
+
+    <!-- 四、搭機權益與需求 -->
+    <div class="card teamOnly">
+      <div class="sec-title">搭機權益與需求</div>
+      <div class="sec-desc">影響座位、餐食與行李，沒有的可以留空。</div>
+      <div class="q">
+        <label class="qt">常客里程會員卡號</label>
+        <div class="hint">航空公司＋卡號，例：長榮 BR 1234567890；沒有可留空。</div>
+        <input type="text" name="mileage" placeholder="沒有可留空">
+      </div>
+      <div class="q">
+        <label class="qt">座位偏好</label>
+        <select name="seat"><option value="">請選擇</option><option>靠走道</option><option>靠窗</option><option>無所謂</option></select>
+      </div>
+      <div class="q">
+        <label class="qt">特殊餐食需求</label>
+        <select name="meal"><option value="">請選擇</option><option>一般餐</option><option>素食</option><option>不吃牛</option><option>過敏（請於備註說明）</option><option>其他</option></select>
+      </div>
+      <div class="q">
+        <label class="qt">特殊協助需求（可複選）</label>
+        <div class="opts" id="assistOpts">
+          <label class="opt"><input type="checkbox" name="assist" value="輪椅"><span class="ot">輪椅</span></label>
+          <label class="opt"><input type="checkbox" name="assist" value="行動不便"><span class="ot">行動不便</span></label>
+          <label class="opt"><input type="checkbox" name="assist" value="孕婦"><span class="ot">孕婦</span></label>
+          <label class="opt"><input type="checkbox" name="assist" value="年長者"><span class="ot">年長者</span></label>
+          <label class="opt"><input type="checkbox" name="assist" value="嬰幼兒同行"><span class="ot">嬰幼兒同行</span></label>
+          <label class="opt"><input type="checkbox" name="assist" value="無"><span class="ot">無</span></label>
+        </div>
+      </div>
+      <div class="q">
+        <label class="qt">托運行李特殊物品</label>
+        <div class="hint">例：樂器、運動器材、醫療器材；沒有可留空。</div>
+        <input type="text" name="baggage" placeholder="沒有可留空">
+      </div>
+      <div class="q">
+        <label class="qt">希望出發機場</label>
+        <select name="airport"><option value="">請選擇</option><option>桃園</option><option>松山</option><option>台中</option><option>高雄</option><option>其他（請於備註說明）</option></select>
+      </div>
+    </div>
+
+    <!-- 五、簽證與其他 -->
+    <div class="card">
+      <div class="sec-title">簽證與其他</div>
+      <div class="q">
+        <label class="qt">目的地簽證狀態<span class="req">*</span></label>
+        <div class="hint">別漏掉，沒簽證機票等於白訂。</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="visa" value="已持有有效簽證"><span class="ot">已持有有效簽證</span></label>
+          <label class="opt"><input type="radio" name="visa" value="符合免簽或電子簽"><span class="ot">符合免簽或電子簽</span></label>
+          <label class="opt"><input type="radio" name="visa" value="尚未辦理（需協助）"><span class="ot">尚未辦理（需協助）</span></label>
+        </div>
+      </div>
+      <div class="q">
+        <label class="qt">其他備註 / 特殊需求</label>
+        <div class="hint">任何想讓老師知道的事，例如想與某人相鄰座位。</div>
+        <textarea name="note" placeholder="沒有可留空"></textarea>
+      </div>
+    </div>
+
+    <div class="err" id="err"></div>
+    <button type="submit" class="btn" id="submitBtn">送出資料</button>
+  </form>
+
+  <div class="done" id="done">
+    <h2>✓ 已收到你的資料</h2>
+    <div>資料已送出給主辦單位，若需要補件會再與你聯絡。</div>
+    <div class="recap" id="recap"></div>
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+/* ===== 設定區：改這裡就好 ===== */
+const CONFIG = {
+  courseTitle: '成就班・機票資料收集表',   // 標題
+  deadline: '',                          // 例：'填寫截止：8/10（一）晚上 23:59'，留空就不顯示
+  contactLine: '有問題請聯絡主辦：02-8695-1188／LINE @maybeyou'
+};
+// Google 試算表接收網址（Apps Script 部署後的 .../exec）。留空會改用 Email 備援。
+const SCRIPT_URL = '';
+const FALLBACK_EMAIL = 'contact@maybeyou.care';
+/* ===== 設定區結束 ===== */
+
+const $ = id => document.getElementById(id);
+$('courseTitle').textContent = CONFIG.courseTitle;
+if (CONFIG.deadline) $('deadlineTxt').textContent = CONFIG.deadline;
+$('foot').textContent = CONFIG.contactLine;
+
+// 選項卡片點選高亮
+document.querySelectorAll('.opt input').forEach(inp => {
+  inp.addEventListener('change', () => {
+    const group = inp.closest('.opts');
+    if (inp.type === 'radio') group.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+    inp.closest('.opt').classList.toggle('sel', inp.checked);
+  });
+});
+
+// 依機票安排切換要填的欄位
+let plan = '';
+document.querySelectorAll('input[name=flightPlan]').forEach(r => {
+  r.addEventListener('change', () => {
+    plan = r.value;
+    const selfArranged = plan !== '去程、回程機票由團隊訂';
+    const noTicket = plan === '去程回程都自行安排';   // 團隊完全不需要幫他訂
+    $('selfPlanBox').classList.toggle('hide', !selfArranged);
+    document.querySelectorAll('.teamOnly').forEach(el => el.classList.toggle('hide', noTicket));
+    document.querySelectorAll('.soloName').forEach(el => el.classList.toggle('hide', !noTicket));
+  });
+});
+
+// 護照照片：讀進來自動縮小成 1600px 的 JPG，避免檔案太大送不出去
+let photoData = '';
+$('fileBox').addEventListener('click', e => { if (e.target.tagName !== 'INPUT') $('photo').click(); });
+$('photo').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1600;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      photoData = c.toDataURL('image/jpeg', 0.8);
+      $('preview').src = photoData; $('preview').classList.remove('hide');
+      $('fileTxt').textContent = '✓ 已選擇：' + file.name + '（點可重選）';
+      $('fileBox').classList.add('has');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function val(name){ const el = document.querySelector('[name="'+name+'"]'); return el ? el.value.trim() : ''; }
+function radio(name){ const el = document.querySelector('[name="'+name+'"]:checked'); return el ? el.value : ''; }
+
+$('form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const err = $('err'); err.style.display = 'none';
+  const noTicket = plan === '去程回程都自行安排';
+
+  const need = [];
+  if (!plan) need.push('機票安排');
+  if (!noTicket) {
+    if (!val('cnName')) need.push('中文姓名');
+    if (!val('lastName')) need.push('護照英文姓氏');
+    if (!val('firstName')) need.push('護照英文名字');
+    if (!val('passportNo')) need.push('護照號碼');
+    if (!val('nationality')) need.push('國籍');
+    if (!val('birthday')) need.push('出生年月日');
+    if (!radio('gender')) need.push('性別');
+    if (!val('passportExpiry')) need.push('護照效期到期日');
+    if (!photoData) need.push('護照資料頁照片');
+  } else if (!$('cnNameSolo').value.trim()) need.push('中文姓名');
+  ['phone|手機號碼','email|電子信箱','emgName|緊急聯絡人姓名','emgPhone|緊急聯絡人電話']
+    .forEach(p => { const [k,label] = p.split('|'); if (!val(k)) need.push(label); });
+  if (!radio('visa')) need.push('簽證狀態');
+
+  if (need.length) {
+    err.textContent = '還沒填：' + need.join('、');
+    err.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  const assist = [...document.querySelectorAll('input[name=assist]:checked')].map(c => c.value).join('、');
+  const payload = {
+    flightPlan: plan,
+    selfPlanNote: val('selfPlanNote'),
+    cnName: noTicket ? $('cnNameSolo').value.trim() : val('cnName'),
+    lastName: val('lastName').toUpperCase(),
+    firstName: val('firstName').toUpperCase(),
+    passportNo: val('passportNo').toUpperCase(),
+    nationality: val('nationality'),
+    birthday: val('birthday'),
+    gender: radio('gender'),
+    passportExpiry: val('passportExpiry'),
+    phone: val('phone'),
+    email: val('email'),
+    emgName: val('emgName'),
+    emgPhone: val('emgPhone'),
+    mileage: val('mileage'),
+    seat: val('seat'),
+    meal: val('meal'),
+    assist: assist,
+    baggage: val('baggage'),
+    airport: val('airport'),
+    visa: radio('visa'),
+    note: val('note'),
+    photo: noTicket ? '' : photoData
+  };
+
+  const btn = $('submitBtn');
+  btn.disabled = true; btn.textContent = '送出中…';
+
+  try {
+    if (SCRIPT_URL) {
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(payload).toString()
+      });
+    } else {
+      // 還沒接試算表：先用 Email 備援，資料一樣收得到（照片請自行附加）
+      const body = Object.entries(payload).filter(([k]) => k !== 'photo')
+        .map(([k, v]) => k + '：' + v).join('\n');
+      window.location.href = 'mailto:' + FALLBACK_EMAIL
+        + '?subject=' + encodeURIComponent('【成就班機票資料】' + payload.cnName)
+        + '&body=' + encodeURIComponent(body);
+    }
+    $('recap').innerHTML =
+      '姓名：' + payload.cnName + '<br>機票安排：' + payload.flightPlan
+      + (payload.selfPlanNote ? '<br>自行安排：' + payload.selfPlanNote : '')
+      + '<br>手機：' + payload.phone + '<br>Email：' + payload.email
+      + '<br>簽證：' + payload.visa;
+    $('form').style.display = 'none';
+    $('done').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    err.textContent = '送出失敗，請再試一次，或直接聯絡主辦單位。';
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = '送出資料';
+  }
+});
+</script>
+</body>
+</html>
