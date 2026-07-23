@@ -219,9 +219,48 @@
         <div class="hint">建議填未同行的家人。</div>
         <input type="tel" name="emgPhone" placeholder="0922-111-222">
       </div>
+      <div class="q">
+        <label class="qt">📍地址<span class="req">*</span></label>
+        <div class="hint">請填寫可收件的完整地址。</div>
+        <input type="text" name="address" placeholder="新北市汐止區康寧街169巷8-3號3樓">
+      </div>
+      <div class="q">
+        <label class="qt">📍身分證字號<span class="req">*</span></label>
+        <div class="hint">投保旅遊平安險使用，不作其他用途。</div>
+        <input type="text" class="upper" name="idNo" placeholder="A123456789">
+      </div>
     </div>
 
-    <!-- 四、重要注意事項 -->
+    <!-- 四、飲食習慣 -->
+    <div class="card">
+      <div class="sec-title">📍飲食習慣</div>
+      <div class="q">
+        <label class="qt">請選擇你的飲食習慣<span class="req">*</span></label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="diet" value="葷食"><span class="ot">葷食</span></label>
+          <label class="opt"><input type="radio" name="diet" value="蛋奶素"><span class="ot">蛋奶素</span></label>
+          <label class="opt"><input type="radio" name="diet" value="全素"><span class="ot">全素</span></label>
+        </div>
+        <div class="hint" style="margin:12px 0 0;">註：會盡量挑選葷素共食餐廳。若當地不便，則須請素食者食用方便素。盡請見諒。</div>
+      </div>
+    </div>
+
+    <!-- 五、活動同意事項 -->
+    <div class="card">
+      <div class="sec-title">📍活動同意事項 ⭐⭐⭐⭐⭐</div>
+      <div class="q">
+        <label class="qt">以下每一項都請確認勾選<span class="req">*</span></label>
+        <div class="opts" id="consentOpts">
+          <label class="opt"><input type="checkbox" name="consent" value="確認護照效期超過六個月"><span class="ot">我確認護照效期超過六個月。</span></label>
+          <label class="opt"><input type="checkbox" name="consent" value="提供的資料皆正確"><span class="ot">我提供的資料皆正確。</span></label>
+          <label class="opt"><input type="checkbox" name="consent" value="遵守團隊規範"><span class="ot">我了解活動期間須遵守團隊規範。</span></label>
+          <label class="opt"><input type="checkbox" name="consent" value="同意蒐集個人資料"><span class="ot">我同意主辦單位蒐集個人資料，僅供機票、住宿、保險及活動聯繫使用。</span></label>
+          <label class="opt"><input type="checkbox" name="consent" value="同意照片影片供紀錄宣傳"><span class="ot">我同意活動期間拍攝之照片、影片，可供主辦單位作活動紀錄及宣傳使用。</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 六、重要注意事項 -->
     <div class="card">
       <div class="sec-title">重要注意事項！</div>
       <ol class="tips">
@@ -330,8 +369,14 @@ $('form').addEventListener('submit', async ev => {
     if (!val('passportExpiry')) need.push('護照效期到期日');
     if (!photoData) need.push('護照資料頁照片');
   } else if (!$('cnNameSolo').value.trim()) need.push('中文姓名');
-  ['phone|手機號碼','email|電子信箱','emgName|緊急聯絡人姓名','emgPhone|緊急聯絡人電話']
+  ['phone|手機號碼','email|電子信箱','emgName|緊急聯絡人姓名','emgPhone|緊急聯絡人電話',
+   'address|地址','idNo|身分證字號']
     .forEach(p => { const [k,label] = p.split('|'); if (!val(k)) need.push(label); });
+  if (!radio('diet')) need.push('飲食習慣');
+  // 活動同意事項五項都要勾
+  const consentBoxes = [...document.querySelectorAll('input[name=consent]')];
+  const consentChecked = consentBoxes.filter(c => c.checked);
+  if (consentChecked.length < consentBoxes.length) need.push('活動同意事項（每一項都要勾）');
 
   if (need.length) {
     err.textContent = '還沒填：' + need.join('、');
@@ -355,6 +400,10 @@ $('form').addEventListener('submit', async ev => {
     email: val('email'),
     emgName: val('emgName'),
     emgPhone: val('emgPhone'),
+    address: val('address'),
+    idNo: val('idNo').toUpperCase(),
+    diet: radio('diet'),
+    consent: consentChecked.map(c => c.value).join('、'),
     photo: noTicket ? '' : photoData
   };
 
