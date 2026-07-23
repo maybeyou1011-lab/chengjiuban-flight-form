@@ -245,7 +245,19 @@
       </div>
     </div>
 
-    <!-- 五、活動同意事項 -->
+    <!-- 五、投保 -->
+    <div class="card">
+      <div class="sec-title">投保（需另外支付費用）</div>
+      <div class="q">
+        <label class="qt">請選擇你的投保方式<span class="req">*</span></label>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="insurance" value="跟團投保"><span><span class="ot">跟團投保（9月11日～9月13日）</span><span class="od">保險名稱：安達人壽 海外加值型<br>金額：1485 元<br>完成表單後，小秘書會提供匯款資訊。</span></span></label>
+          <label class="opt"><input type="radio" name="insurance" value="自行投保"><span><span class="ot">選擇自行投保</span><span class="od">請於投保完畢後，出示投保紀錄給小秘書。</span></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 六、活動同意事項 -->
     <div class="card">
       <div class="sec-title">活動同意事項</div>
       <div class="q">
@@ -260,7 +272,7 @@
       </div>
     </div>
 
-    <!-- 六、重要注意事項 -->
+    <!-- 七、重要注意事項 -->
     <div class="card">
       <div class="sec-title">重要注意事項！</div>
       <ol class="tips">
@@ -373,6 +385,7 @@ $('form').addEventListener('submit', async ev => {
    'emgName|緊急聯絡人姓名','emgPhone|緊急聯絡人電話']
     .forEach(p => { const [k,label] = p.split('|'); if (!val(k)) need.push(label); });
   if (!radio('diet')) need.push('飲食習慣');
+  if (!radio('insurance')) need.push('投保方式');
   // 活動同意事項五項都要勾
   const consentBoxes = [...document.querySelectorAll('input[name=consent]')];
   const consentChecked = consentBoxes.filter(c => c.checked);
@@ -403,6 +416,7 @@ $('form').addEventListener('submit', async ev => {
     emgName: val('emgName'),
     emgPhone: val('emgPhone'),
     diet: radio('diet'),
+    insurance: radio('insurance'),
     consent: consentChecked.map(c => c.value).join('、'),
     photo: noTicket ? '' : photoData
   };
