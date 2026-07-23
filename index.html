@@ -44,6 +44,12 @@
     padding-bottom:10px; border-bottom:2px solid var(--line); margin-bottom:6px;}
   .sec-desc{font-size:13px; color:var(--muted); margin:8px 0 4px;}
 
+  /* 重要注意事項的編號清單 */
+  .tips{margin:14px 0 0; padding-left:20px; font-size:15px; line-height:1.75; color:#5b4a33;}
+  .tips li{margin-bottom:12px;}
+  .tips li:last-child{margin-bottom:0;}
+  .tips b{color:var(--gold-deep);}
+
   .q{margin-top:18px;}
   .q label.qt{display:block; font-weight:800; font-size:15px; margin-bottom:6px;}
   .req{color:var(--warn); font-weight:900; margin-left:4px;}
@@ -215,23 +221,15 @@
       </div>
     </div>
 
-    <!-- 四、簽證與其他 -->
+    <!-- 四、重要注意事項 -->
     <div class="card">
-      <div class="sec-title">簽證與其他</div>
-      <div class="q">
-        <label class="qt">目的地簽證狀態<span class="req">*</span></label>
-        <div class="hint">別漏掉，沒簽證機票等於白訂。</div>
-        <div class="opts">
-          <label class="opt"><input type="radio" name="visa" value="已持有有效簽證"><span class="ot">已持有有效簽證</span></label>
-          <label class="opt"><input type="radio" name="visa" value="符合免簽或電子簽"><span class="ot">符合免簽或電子簽</span></label>
-          <label class="opt"><input type="radio" name="visa" value="尚未辦理（需協助）"><span class="ot">尚未辦理（需協助）</span></label>
-        </div>
-      </div>
-      <div class="q">
-        <label class="qt">其他備註 / 特殊需求</label>
-        <div class="hint">任何想讓老師知道的事，例如想與某人相鄰座位。</div>
-        <textarea name="note" placeholder="沒有可留空"></textarea>
-      </div>
+      <div class="sec-title">重要注意事項！</div>
+      <ol class="tips">
+        <li><b>護照效期</b>：確認個人護照效期在回國日還有 <b>6 個月以上</b>（這是最容易被忽略、卻會直接被拒絕登機的地雷，務必檢查）</li>
+        <li><b>電子入境卡（e-Arrival Card）</b>：請於出發前線上填好（入境前 3 天內可申請），可以省去在機場排隊寫紙本卡的時間。到時候小秘書會提醒大家。</li>
+        <li>送出前請仔細檢查資料是否皆輸入正確</li>
+        <li>有任何問題請馬上詢問官方小秘書，完成填寫請回覆小秘書「<b>完成機票資料</b>」</li>
+      </ol>
     </div>
 
     <div class="err" id="err"></div>
@@ -334,7 +332,6 @@ $('form').addEventListener('submit', async ev => {
   } else if (!$('cnNameSolo').value.trim()) need.push('中文姓名');
   ['phone|手機號碼','email|電子信箱','emgName|緊急聯絡人姓名','emgPhone|緊急聯絡人電話']
     .forEach(p => { const [k,label] = p.split('|'); if (!val(k)) need.push(label); });
-  if (!radio('visa')) need.push('簽證狀態');
 
   if (need.length) {
     err.textContent = '還沒填：' + need.join('、');
@@ -358,8 +355,6 @@ $('form').addEventListener('submit', async ev => {
     email: val('email'),
     emgName: val('emgName'),
     emgPhone: val('emgPhone'),
-    visa: radio('visa'),
-    note: val('note'),
     photo: noTicket ? '' : photoData
   };
 
@@ -384,8 +379,7 @@ $('form').addEventListener('submit', async ev => {
     $('recap').innerHTML =
       '姓名：' + payload.cnName + '<br>機票安排：' + payload.flightPlan
       + (payload.selfPlanNote ? '<br>自行安排：' + payload.selfPlanNote : '')
-      + '<br>手機：' + payload.phone + '<br>Email：' + payload.email
-      + '<br>簽證：' + payload.visa;
+      + '<br>手機：' + payload.phone + '<br>Email：' + payload.email;
     $('form').style.display = 'none';
     $('done').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
