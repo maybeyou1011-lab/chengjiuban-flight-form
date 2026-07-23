@@ -117,7 +117,7 @@
       <div class="q">
         <label class="qt">請選擇你的機票安排<span class="req">*</span></label>
         <div class="opts" id="planOpts">
-          <label class="opt"><input type="radio" name="flightPlan" value="去程、回程機票由團隊訂"><span><span class="ot">1. 去程、回程機票由團隊訂</span><span class="od">全程與團隊同班機，最省事也最好照應。</span></span></label>
+          <label class="opt"><input type="radio" name="flightPlan" value="去程、回程機票由團隊訂"><span><span class="ot">1. 去程、回程機票由團隊訂</span><span class="od">全程與團隊同班機。</span></span></label>
           <label class="opt"><input type="radio" name="flightPlan" value="去程機票我有個人安排"><span><span class="ot">2. 去程機票我有個人安排，不需幫我訂</span><span class="od">只需要團隊幫忙訂回程。去程費用自付。</span></span></label>
           <label class="opt"><input type="radio" name="flightPlan" value="回程機票我有個人安排"><span><span class="ot">3. 回程機票我有個人安排，不需幫我訂</span><span class="od">只需要團隊幫忙訂去程。回程費用自付。</span></span></label>
           <label class="opt"><input type="radio" name="flightPlan" value="去程回程都自行安排"><span><span class="ot">4. 去程回程時間我都有個人安排，不需幫我訂</span><span class="od">機票全部自理，費用自付。</span></span></label>
@@ -215,46 +215,7 @@
       </div>
     </div>
 
-    <!-- 四、搭機權益與需求 -->
-    <div class="card teamOnly">
-      <div class="sec-title">搭機權益與需求</div>
-      <div class="sec-desc">影響座位、餐食與行李，沒有的可以留空。</div>
-      <div class="q">
-        <label class="qt">常客里程會員卡號</label>
-        <div class="hint">航空公司＋卡號，例：長榮 BR 1234567890；沒有可留空。</div>
-        <input type="text" name="mileage" placeholder="沒有可留空">
-      </div>
-      <div class="q">
-        <label class="qt">座位偏好</label>
-        <select name="seat"><option value="">請選擇</option><option>靠走道</option><option>靠窗</option><option>無所謂</option></select>
-      </div>
-      <div class="q">
-        <label class="qt">特殊餐食需求</label>
-        <select name="meal"><option value="">請選擇</option><option>一般餐</option><option>素食</option><option>不吃牛</option><option>過敏（請於備註說明）</option><option>其他</option></select>
-      </div>
-      <div class="q">
-        <label class="qt">特殊協助需求（可複選）</label>
-        <div class="opts" id="assistOpts">
-          <label class="opt"><input type="checkbox" name="assist" value="輪椅"><span class="ot">輪椅</span></label>
-          <label class="opt"><input type="checkbox" name="assist" value="行動不便"><span class="ot">行動不便</span></label>
-          <label class="opt"><input type="checkbox" name="assist" value="孕婦"><span class="ot">孕婦</span></label>
-          <label class="opt"><input type="checkbox" name="assist" value="年長者"><span class="ot">年長者</span></label>
-          <label class="opt"><input type="checkbox" name="assist" value="嬰幼兒同行"><span class="ot">嬰幼兒同行</span></label>
-          <label class="opt"><input type="checkbox" name="assist" value="無"><span class="ot">無</span></label>
-        </div>
-      </div>
-      <div class="q">
-        <label class="qt">托運行李特殊物品</label>
-        <div class="hint">例：樂器、運動器材、醫療器材；沒有可留空。</div>
-        <input type="text" name="baggage" placeholder="沒有可留空">
-      </div>
-      <div class="q">
-        <label class="qt">希望出發機場</label>
-        <select name="airport"><option value="">請選擇</option><option>桃園</option><option>松山</option><option>台中</option><option>高雄</option><option>其他（請於備註說明）</option></select>
-      </div>
-    </div>
-
-    <!-- 五、簽證與其他 -->
+    <!-- 四、簽證與其他 -->
     <div class="card">
       <div class="sec-title">簽證與其他</div>
       <div class="q">
@@ -382,7 +343,6 @@ $('form').addEventListener('submit', async ev => {
     return;
   }
 
-  const assist = [...document.querySelectorAll('input[name=assist]:checked')].map(c => c.value).join('、');
   const payload = {
     flightPlan: plan,
     selfPlanNote: val('selfPlanNote'),
@@ -398,12 +358,6 @@ $('form').addEventListener('submit', async ev => {
     email: val('email'),
     emgName: val('emgName'),
     emgPhone: val('emgPhone'),
-    mileage: val('mileage'),
-    seat: val('seat'),
-    meal: val('meal'),
-    assist: assist,
-    baggage: val('baggage'),
-    airport: val('airport'),
     visa: radio('visa'),
     note: val('note'),
     photo: noTicket ? '' : photoData
