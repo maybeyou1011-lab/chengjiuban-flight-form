@@ -211,12 +211,12 @@
         <input type="email" name="email" placeholder="you@example.com">
       </div>
       <div class="q">
-        <label class="qt">📍地址<span class="req">*</span></label>
+        <label class="qt">地址<span class="req">*</span></label>
         <div class="hint">請填寫可收件的完整地址。</div>
         <input type="text" name="address" placeholder="新北市汐止區康寧街169巷8-3號3樓">
       </div>
       <div class="q">
-        <label class="qt">📍身分證字號<span class="req">*</span></label>
+        <label class="qt">身分證字號<span class="req">*</span></label>
         <div class="hint">投保旅遊平安險使用，不作其他用途。</div>
         <input type="text" class="upper" name="idNo" placeholder="A123456789">
       </div>
@@ -233,7 +233,7 @@
 
     <!-- 四、飲食習慣 -->
     <div class="card">
-      <div class="sec-title">📍飲食習慣</div>
+      <div class="sec-title">飲食習慣</div>
       <div class="q">
         <label class="qt">請選擇你的飲食習慣<span class="req">*</span></label>
         <div class="opts">
@@ -247,7 +247,7 @@
 
     <!-- 五、活動同意事項 -->
     <div class="card">
-      <div class="sec-title">📍活動同意事項 ⭐⭐⭐⭐⭐</div>
+      <div class="sec-title">活動同意事項</div>
       <div class="q">
         <label class="qt">以下每一項都請確認勾選<span class="req">*</span></label>
         <div class="opts" id="consentOpts">
@@ -267,7 +267,7 @@
         <li><b>護照效期</b>：確認個人護照效期在回國日還有 <b>6 個月以上</b>（這是最容易被忽略、卻會直接被拒絕登機的地雷，務必檢查）</li>
         <li><b>電子入境卡（e-Arrival Card）</b>：請於出發前線上填好（入境前 3 天內可申請），可以省去在機場排隊寫紙本卡的時間。到時候小秘書會提醒大家。</li>
         <li>送出前請仔細檢查資料是否皆輸入正確</li>
-        <li>有任何問題請馬上詢問官方小秘書，完成填寫請回覆小秘書「<b>完成機票資料</b>」</li>
+        <li>有任何問題請馬上詢問官方小秘書，完成填寫請回覆小秘書「<b>完成成就班行前資料</b>」</li>
       </ol>
     </div>
 
@@ -276,7 +276,7 @@
   </form>
 
   <div class="done" id="done">
-    <h2>✓ 已收到你的資料</h2>
+    <h2>已收到你的資料</h2>
     <div>資料已送出給主辦單位，若需要補件會再與你聯絡。</div>
     <div class="recap" id="recap"></div>
   </div>
@@ -340,7 +340,7 @@ $('photo').addEventListener('change', e => {
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
       photoData = c.toDataURL('image/jpeg', 0.8);
       $('preview').src = photoData; $('preview').classList.remove('hide');
-      $('fileTxt').textContent = '✓ 已選擇：' + file.name + '（點可重選）';
+      $('fileTxt').textContent = '已選擇：' + file.name + '（點可重選）';
       $('fileBox').classList.add('has');
     };
     img.src = ev.target.result;
