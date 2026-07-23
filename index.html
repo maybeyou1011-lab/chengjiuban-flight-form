@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>成就班出國課程・機票資料收集表</title>
-<meta name="description" content="成就班出國課程學員機票資料收集表。請先確認機票是否與團隊一起訂，再依指示填寫護照與聯絡資料。">
-<meta property="og:title" content="成就班出國課程・機票資料收集表">
+<title>成就班出國課程・相關資料收集表</title>
+<meta name="description" content="成就班出國課程學員相關資料收集表。請先確認機票是否與團隊一起訂，再依指示填寫護照與聯絡資料。">
+<meta property="og:title" content="成就班出國課程・相關資料收集表">
 <meta property="og:description" content="先選機票安排方式，再填護照資料。姓名、生日、護照號碼請一字不差照護照填寫。">
 <style>
   /* ============================================================
@@ -50,10 +50,10 @@
   .tips li:last-child{margin-bottom:0;}
   .tips b{color:var(--gold-deep);}
 
-  .q{margin-top:18px;}
-  .q label.qt{display:block; font-weight:800; font-size:15px; margin-bottom:6px;}
+  .q{margin-top:26px;}
+  .q label.qt{display:block; font-weight:800; font-size:15px; margin-bottom:10px; line-height:1.6;}
   .req{color:var(--warn); font-weight:900; margin-left:4px;}
-  .hint{font-size:12.5px; color:var(--muted); margin-bottom:8px;}
+  .hint{font-size:13px; color:var(--muted); line-height:1.7; margin:0 0 14px;}
 
   input[type=text], input[type=tel], input[type=email], input[type=date], select, textarea{
     width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px;
@@ -104,7 +104,7 @@
 
   <div class="hero">
     <div class="badge">出國課程</div>
-    <div class="title" id="courseTitle">成就班・機票資料收集表</div>
+    <div class="title" id="courseTitle">成就班・相關資料收集表</div>
     <div class="subtitle">為了幫大家訂到正確的機票，請花 5 分鐘填完這份表單。<br>姓名、生日、護照號碼<b>一字不差照護照填寫</b>。</div>
     <div class="deadline" id="deadlineTxt"></div>
   </div>
@@ -143,7 +143,7 @@
 
       <div class="q">
         <label class="qt">中文姓名<span class="req">*</span></label>
-        <div class="hint">方便老師辨識是誰。</div>
+        <div class="hint">方便工作人員辨識是誰。</div>
         <input type="text" name="cnName" id="cnName" placeholder="王大明">
       </div>
       <div class="q">
@@ -184,7 +184,7 @@
       </div>
       <div class="q">
         <label class="qt">護照個人資料頁照片<span class="req">*</span></label>
-        <div class="hint">上傳有照片那一頁，老師會對照有沒有打錯字。照片會自動縮小後上傳，只有主辦看得到。</div>
+        <div class="hint">上傳有照片那一頁，工作人員會對照有沒有打錯字。照片會自動縮小後上傳，只有主辦看得到。</div>
         <label class="filebox" id="fileBox">
           <span id="fileTxt">點這裡拍照或選擇檔案</span>
           <input type="file" id="photo" accept="image/*" style="display:none">
@@ -248,7 +248,7 @@
 <script>
 /* ===== 設定區：改這裡就好 ===== */
 const CONFIG = {
-  courseTitle: '成就班・機票資料收集表',   // 標題
+  courseTitle: '成就班・相關資料收集表',   // 標題
   deadline: '',                          // 例：'填寫截止：8/10（一）晚上 23:59'，留空就不顯示
   contactLine: '有問題請聯絡主辦：02-8695-1188／LINE @maybeyou'
 };
