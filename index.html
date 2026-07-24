@@ -336,28 +336,62 @@ document.querySelectorAll('input[name=flightPlan]').forEach(r => {
 });
 
 // 護照照片：讀進來自動縮小成 1600px 的 JPG，避免檔案太大送不出去
+// iPhone 拍的相片常是 HEIC/HEIF，很多瀏覽器（尤其 LINE 內建瀏覽器）畫不出來，
+// 所以先偵測 HEIC 就用 heic2any 轉成 JPG，再走原本縮圖流程；全程失敗都會給提示，不再靜默卡住。
 let photoData = '';
 $('fileBox').addEventListener('click', e => { if (e.target.tagName !== 'INPUT') $('photo').click(); });
-$('photo').addEventListener('change', e => {
+
+// 小工具：把 Blob 讀成 dataURL
+function readAsDataURL(blob){
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(blob); });
+}
+// 小工具：把 dataURL 載成 <img>，載不出來就 reject（不會再無聲卡死）
+function loadImage(src){
+  return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('decode-fail')); im.src = src; });
+}
+// 需要時才去 CDN 抓 HEIC 轉檔套件（沒選到 HEIC 就完全不載）
+let heicLoading;
+function loadHeicLib(){
+  if (window.heic2any) return Promise.resolve();
+  if (heicLoading) return heicLoading;
+  heicLoading = new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js';
+    s.onload = res; s.onerror = () => rej(new Error('heic-lib-fail'));
+    document.head.appendChild(s);
+  });
+  return heicLoading;
+}
+
+$('photo').addEventListener('change', async e => {
   const file = e.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = new Image();
-    img.onload = () => {
-      const max = 1600;
-      const scale = Math.min(1, max / Math.max(img.width, img.height));
-      const c = document.createElement('canvas');
-      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      photoData = c.toDataURL('image/jpeg', 0.8);
-      $('preview').src = photoData; $('preview').classList.remove('hide');
-      $('fileTxt').textContent = '已選擇：' + file.name + '（點可重選）';
-      $('fileBox').classList.add('has');
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
+  $('fileTxt').textContent = '照片處理中…請稍候';
+  try {
+    let blob = file;
+    const isHeic = /hei[cf]/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
+    if (isHeic) {
+      await loadHeicLib();
+      const out = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+      blob = Array.isArray(out) ? out[0] : out;
+    }
+    const dataUrl = await readAsDataURL(blob);
+    const img = await loadImage(dataUrl);
+    const max = 1600;
+    const scale = Math.min(1, max / Math.max(img.width, img.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    photoData = c.toDataURL('image/jpeg', 0.8);
+    $('preview').src = photoData; $('preview').classList.remove('hide');
+    $('fileTxt').textContent = '已選擇：' + file.name + '（點可重選）';
+    $('fileBox').classList.add('has');
+  } catch (err) {
+    photoData = '';
+    $('preview').classList.add('hide');
+    $('fileBox').classList.remove('has');
+    $('fileTxt').textContent = '這張照片讀取失敗，請改用手機「螢幕截圖」再上傳，或換一張照片';
+  }
 });
 
 function val(name){ const el = document.querySelector('[name="'+name+'"]'); return el ? el.value.trim() : ''; }
